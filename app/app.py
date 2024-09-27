@@ -1,13 +1,10 @@
 from flask import Flask
-from database import DatabaseConnection
 
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://user:password@localhost/nome_do_banco'
 
-# Inicializando a conexão com o banco de dados
-db = DatabaseConnection(app)
-db.initialize_db(app)  # Passa o app corretamente para inicializar o banco de dados
+db = SQLAlchemy(app)
 
 @app.route('/test_db')
 def test_db():
