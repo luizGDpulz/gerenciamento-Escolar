@@ -1,15 +1,17 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://user:password@localhost/nome_do_banco'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://app_user:QWxVbk9zVERz@alunostds.dev.br:3308/app_user'
 
 db = SQLAlchemy(app)
 
 @app.route('/test_db')
 def test_db():
     try:
-        db.session.execute('SELECT 1')
+        db.session.execute(text("SELECT 1"))
         return 'Conexão com o banco de dados estabelecida com sucesso!'
     except Exception as e:
         return str(e)
