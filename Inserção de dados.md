@@ -1,30 +1,3 @@
-Para documentar no GitHub o processo de inserção de dados no banco de dados `sistema_gerenciamento_escolar`, usando o código SQL fornecido, a documentação poderia ser estruturada da seguinte forma:
-
----
-
-# Sistema de Gerenciamento Escolar - Inserção de Dados
-
-Este projeto utiliza um banco de dados MySQL para gerenciar um sistema escolar, incluindo agendamentos, professores, salas, turmas e mais. Abaixo, você encontrará instruções detalhadas sobre como adicionar dados às principais tabelas do banco de dados.
-
-## Estrutura do Banco de Dados
-
-O banco de dados contém as seguintes tabelas:
-- `agendamentos`
-- `andares`
-- `dias`
-- `disponibilidade`
-- `disponibilidade_professores`
-- `predios`
-- `professores`
-- `recursos`
-- `recursos_alugaveis`
-- `recursos_alugaveis_disponibilidade`
-- `salas`
-- `turmas`
-- `turma_dias`
-- `turnos`
-- `usuarios`
-
 ## Inserindo Dados no Banco de Dados
 
 ### 1. Inserindo dados na tabela `usuarios`
