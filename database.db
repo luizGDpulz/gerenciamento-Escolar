@@ -92,6 +92,7 @@ CREATE TABLE `disponibilidade_professores` (
 CREATE TABLE `predios` (
   `ID_predio` int(11) NOT NULL,
   `Nome` varchar(100) NOT NULL,
+  `Endereco` varchar(200) NOT NULL,
   `Andares` int(11) NOT NULL,
   `Cor` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
