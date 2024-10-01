@@ -1,27 +1,3 @@
-"""
-Luiz:
-
-Login
-Register student
-Schedule
-
-Kelvin:
-
-Dashboard
-Register class
-Schedule classrooms
-
-Matiele:
-
-MainFrame
-Register classrooms
-
-Rafael:
-
-Register build
-Schedule classrooms
-"""
-
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from sqlalchemy import text
 from models import db # ,Sala  # Importa a instância do banco de dados e o modelo Sala
