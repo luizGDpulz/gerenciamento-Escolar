@@ -29,10 +29,16 @@ class RouteManager:
         @self.main_routes.route('/test_db')
         def test_db():
             try:
-                db.session.execute(text("SELECT 1"))
-                return 'Conexão com o banco de dados estabelecida com sucesso!'
+                # Adicione aqui uma consulta simples ao banco de dados
+                result = db.session.execute(text("SELECT 1")).fetchone()
+                debug_message = f"Conexão com o banco de dados bem-sucedida. Resultado: {result[0]}"
+                print(debug_message)  # Para depuração no console
+                return render_template('teste_db.html', debug_message=debug_message)
             except Exception as e:
-                return str(e)
+                # Registre o erro para depuração
+                error_message = f"Erro ao conectar ao banco de dados: {str(e)}"
+                print(error_message)  # Para depuração no console
+                return render_template('teste_db.html', error_message=error_message)
 
         # Rotas de autenticação e cadastro (auth_routes)
         @self.auth_routes.route('/login')
