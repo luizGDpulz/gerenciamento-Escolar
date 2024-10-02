@@ -1,9 +1,7 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from models import db
 from sqlalchemy.exc import SQLAlchemyError
 import time
-
-db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
