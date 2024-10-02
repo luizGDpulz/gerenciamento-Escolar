@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste de Banco de Dados</title>
+    <title>Consultas ao Banco de Dados</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-8">
@@ -33,8 +33,8 @@
             Executar Consulta
         </button>
         
-        <div id="result-container" class="mt-6 bg-black text-white p-4 rounded-md" style="font-family: monospace; white-space: pre-wrap;">
-            Resultado da consulta aparecerá aqui...
+        <div id="result-container" class="mt-6 bg-gray-100 p-4 rounded-md overflow-auto" style="max-height: 400px;">
+            <pre id="result-content" class="text-sm"></pre>
         </div>
     </div>
 
@@ -49,11 +49,10 @@
             fetch(`/execute_query/${selectedQuery}`)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('result-container').textContent = JSON.stringify(data, null, 2);
+                    document.getElementById('result-content').textContent = JSON.stringify(data, null, 2);
                 })
                 .catch(error => {
-                    console.error('Erro:', error);
-                    document.getElementById('result-container').textContent = 'Erro ao executar a consulta.';
+                    document.getElementById('result-content').textContent = 'Erro ao executar a consulta. Por favor, tente novamente.';
                 });
         });
     </script>
