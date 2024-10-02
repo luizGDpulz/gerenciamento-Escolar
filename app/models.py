@@ -203,40 +203,23 @@ class Dia(db.Model):
         return cls.query.all()
 
 class Professor(db.Model):
-    __tablename__ = 'professores'
     ID_professor = db.Column(db.Integer, primary_key=True)
     Nome = db.Column(db.String(100), nullable=False)
-    Area = db.Column(db.String(50), nullable=False)
-    CargaHoraria = db.Column(db.Integer, nullable=False)
-    TipoContrato = db.Column(db.String(50), nullable=False)
-    ID_disponibilidade = db.Column(db.Integer, db.ForeignKey('disponibilidade_professores.ID_disponibilidade_professor'))
-    disponibilidades = db.relationship('DisponibilidadeProfessor', backref='professor', lazy=True)
-
-    def __repr__(self):
-        return f'<Professor {self.Nome}>'
-
-    @classmethod
-    def adicionar_professor(cls, nome, area, carga_horaria, tipo_contrato):
-        novo_professor = cls(Nome=nome, Area=area, CargaHoraria=carga_horaria, TipoContrato=tipo_contrato)
-        db.session.add(novo_professor)
-        db.session.commit()
-        return novo_professor
-
-    @classmethod
-    def listar_professores(cls):
-        return cls.query.all()
+    Area = db.Column(db.String(50))
+    CargaHoraria = db.Column(db.Integer)
+    TipoContrato = db.Column(db.String(50))
+    
+    disponibilidades = db.relationship('DisponibilidadeProfessor', 
+                                       back_populates='professor',
+                                       foreign_keys='DisponibilidadeProfessor.ID_professor')
 
 class DisponibilidadeProfessor(db.Model):
-    __tablename__ = 'disponibilidade_professores'
-    ID_disponibilidade_professor = db.Column(db.Integer, primary_key=True)
-    IDprofessor = db.Column(db.Integer, db.ForeignKey('professores.ID_professor'), nullable=False)
-
-    def __repr__(self):
-        return f'<DisponibilidadeProfessor {self.ID_disponibilidade_professor}>'
-
-    @classmethod
-    def listar_disponibilidades_professores(cls):
-        return cls.query.all()
+    ID = db.Column(db.Integer, primary_key=True)
+    ID_professor = db.Column(db.Integer, db.ForeignKey('professor.ID_professor'), nullable=False)
+    ID_disponibilidade = db.Column(db.Integer, db.ForeignKey('disponibilidade.ID'), nullable=False)
+    
+    professor = db.relationship('Professor', back_populates='disponibilidades')
+    disponibilidade = db.relationship('Disponibilidade')
 
 class Agendamento(db.Model):
     __tablename__ = 'agendamentos'
