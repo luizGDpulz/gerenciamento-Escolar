@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultas ao Banco de Dados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <h1 class="text-2xl font-bold mb-6">Consultas ao Banco de Dados</h1>
+        
+        <div class="mb-4">
+            <label for="query-select" class="block text-sm font-medium text-gray-700 mb-2">Selecione uma consulta:</label>
+            <select id="query-select" class="w-full p-2 border border-gray-300 rounded-md">
+                <option value="">Selecione uma opção</option>
+                <option value="listar_usuarios">Listar Usuários</option>
+                <option value="listar_predios">Listar Prédios</option>
+                <option value="listar_andares">Listar Andares</option>
+                <option value="listar_salas">Listar Salas</option>
+                <option value="listar_recursos">Listar Recursos</option>
+                <option value="listar_recursos_alugaveis">Listar Recursos Alugáveis</option>
+                <option value="listar_turmas">Listar Turmas</option>
+                <option value="listar_dias">Listar Dias</option>
+                <option value="listar_professores">Listar Professores</option>
+                <option value="listar_agendamentos">Listar Agendamentos</option>
+                <option value="listar_turnos">Listar Turnos</option>
+                <option value="listar_disponibilidades">Listar Disponibilidades</option>
+            </select>
+        </div>
+        
+        <button id="execute-query" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+            Executar Consulta
+        </button>
+        
+        <div id="result-container" class="mt-6 bg-gray-100 p-4 rounded-md overflow-auto" style="max-height: 400px;">
+            <pre id="result-content" class="text-sm"></pre>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('execute-query').addEventListener('click', function() {
+            const selectedQuery = document.getElementById('query-select').value;
+            if (!selectedQuery) {
+                alert('Por favor, selecione uma consulta.');
+                return;
+            }
+
+            fetch(`/execute_query/${selectedQuery}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result-content').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('result-content').textContent = 'Erro ao executar a consulta. Por favor, tente novamente.';
+                });
+        });
+    </script>
+</body>
+</html>
