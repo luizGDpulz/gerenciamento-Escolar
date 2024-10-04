@@ -1,6 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, session
 from sqlalchemy import text
 from models import db, Usuario, Predio, Andar, Sala, Recurso, RecursoAlugavel, RecursoAlugavelDisponibilidade, Turma, TurmaDia, Dia, Professor, DisponibilidadeProfessor, Agendamento, Turno, Disponibilidade
+from werkzeug.security import check_password_hash
+import logging
+
+# Configuração do logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 # Criar blueprints para diferentes áreas da aplicação
 main_routes = Blueprint('main', __name__)
@@ -32,13 +38,13 @@ class RouteManager:
                 # Adicione aqui uma consulta simples ao banco de dados
                 result = db.session.execute(text("SELECT 1")).fetchone()
                 debug_message = f"Conexão com o banco de dados bem-sucedida. Resultado: {result[0]}"
-                print(debug_message)  # Para depuração no console
+                logger.debug(debug_message)
                 return render_template('teste_db.html', debug_message=debug_message)
             
             except Exception as e:
                 # Registre o erro para depuração
                 error_message = f"Erro ao conectar ao banco de dados: {str(e)}"
-                print(error_message)  # Para depuração no console
+                logger.error(error_message)
                 return render_template('teste_db.html', error_message=error_message)
 
         @self.main_routes.route('/execute_query/<query_name>', methods=['GET'])
@@ -75,6 +81,7 @@ class RouteManager:
                 
                 return jsonify(result)
             except Exception as e:
+                logger.error(f"Erro ao executar consulta {query_name}: {str(e)}")
                 return jsonify({'error': str(e)}), 500
 
         @self.main_routes.route('/insert_data', methods=['POST'])
@@ -106,14 +113,52 @@ class RouteManager:
                 return jsonify({'error': str(e)}), 500
             
         # Rotas de autenticação e cadastro (auth_routes)
-        @self.auth_routes.route('/login')
+        @self.auth_routes.route('/login', methods=['GET', 'POST'])
         def login():
+            if request.method == 'POST':
+                email = request.form['email']
+                senha = request.form['password']
+                logger.debug(f"Tentativa de login para o email: {email}")
+                usuario = Usuario.query.filter_by(Email=email).first()
+                if usuario:
+                    logger.debug(f"Usuário encontrado: {usuario.Nome}")
+                    if usuario.Senha == senha:
+                        session['user_id'] = usuario.ID_usuario
+                        logger.info(f"Login bem-sucedido para o usuário: {usuario.Nome}")
+                        flash('Login realizado com sucesso!', 'success')
+                        return jsonify({'success': True, 'redirect': url_for('main.dashboard')})
+                    else:
+                        logger.warning(f"Senha incorreta para o usuário: {usuario.Nome}, {senha} - {usuario.Senha}")
+                        return jsonify({'success': False, 'message': 'Senha incorreta. Por favor, tente novamente.'})
+                else:
+                    logger.warning(f"Tentativa de login com email não cadastrado: {email}")
+                    return jsonify({'success': False, 'message': 'Email não encontrado. Por favor, verifique o email ou registre-se.'})
             return render_template('login.html')
+
+        @self.auth_routes.route('/logout')
+        def logout():
+            session.pop('user_id', None)
+            flash('Você foi desconectado.', 'info')
+            return redirect(url_for('auth.login'))
 
         @self.auth_routes.route('/register_student')
         def register_student():
             return "Cadastro de Aluno"
-            
+        # Rota do dashboard
+        @self.main_routes.route('/dashboard')
+        def dashboard():
+            if 'user_id' not in session:
+                logger.warning("Tentativa de acesso ao dashboard sem login")
+                flash('Por favor, faça login para acessar o dashboard.', 'error')
+                return redirect(url_for('auth.login'))
+            logger.info(f"Acesso ao dashboard pelo usuário ID: {session['user_id']}")
+            return render_template('dashboard.html')
+
+        @self.auth_routes.route('/schedule')
+        def schedule():
+            return "Agendamento de Aulas"
+        
+
         # # Rota para registrar uma nova turma
         # @self.main_routes.route('/register_class', methods=['GET', 'POST'])
         # def register_class():
@@ -138,16 +183,6 @@ class RouteManager:
             
         #     salas = Sala.query.all()
         #     return render_template('schedule_classrooms.html', classrooms=salas)
-
-
-        # Rota do dashboard
-        @self.main_routes.route('/dashboard')
-        def dashboard():
-            return render_template('dashboard.html')
-
-        @self.auth_routes.route('/schedule')
-        def schedule():
-            return "Agendamento de Aulas"
 
         # Novas rotas
         @self.main_routes.route('/schedule/classrooms', methods=['POST'])
