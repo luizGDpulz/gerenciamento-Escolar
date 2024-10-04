@@ -2,9 +2,13 @@ from flask import Flask
 from models import db
 from sqlalchemy.exc import SQLAlchemyError
 import time
+import os  # Adicione esta linha
 
 def create_app():
     app = Flask(__name__)
+
+    # Adicione estas linhas para configurar a chave secreta
+    app.secret_key = os.environ.get('SECRET_KEY') or 'uma_chave_secreta_muito_secreta'
 
     # Configuração do banco de dados
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://app_user:QWxVbk9zVERz@alunostds.dev.br:3308/app_user'
