@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultas ao Banco de Dados</title>
+    <title>Consultas e Inserções ao Banco de Dados</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-8">
     <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
-        <h1 class="text-2xl font-bold mb-6">Consultas ao Banco de Dados</h1>
+        <h1 class="text-2xl font-bold mb-6">Consultas e Inserções ao Banco de Dados</h1>
         
+        <!-- Campo de seleção de consulta -->
         <div class="mb-4">
             <label for="query-select" class="block text-sm font-medium text-gray-700 mb-2">Selecione uma consulta:</label>
             <select id="query-select" class="w-full p-2 border border-gray-300 rounded-md">
@@ -28,17 +29,32 @@
                 <option value="listar_disponibilidades">Listar Disponibilidades</option>
             </select>
         </div>
-        
+
+        <!-- Botão para executar consulta -->
         <button id="execute-query" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
             Executar Consulta
         </button>
-        
+
+        <!-- Campo para inserção de dados -->
+        <div class="mt-6 mb-4">
+            <h2 class="text-lg font-semibold mb-2">Inserir novo usuário</h2>
+            <label for="insert-data" class="block text-sm font-medium text-gray-700 mb-2">Insira os dados do usuário em formato JSON:</label>
+            <textarea id="insert-data" class="w-full p-2 border border-gray-300 rounded-md" rows="5" placeholder='Ex: {"nome": "João", "cargo": "Gerente", "email": "joao@email.com", "senha": "senha123"}'></textarea>
+        </div>
+
+        <!-- Botão para inserir dados -->
+        <button id="insert-data-button" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+            Inserir Dados
+        </button>
+
+        <!-- Container de resultados -->
         <div id="result-container" class="mt-6 bg-gray-100 p-4 rounded-md overflow-auto" style="max-height: 400px;">
             <pre id="result-content" class="text-sm"></pre>
         </div>
     </div>
 
     <script>
+        // Script para executar consultas
         document.getElementById('execute-query').addEventListener('click', function() {
             const selectedQuery = document.getElementById('query-select').value;
             if (!selectedQuery) {
@@ -54,6 +70,36 @@
                 .catch(error => {
                     document.getElementById('result-content').textContent = 'Erro ao executar a consulta. Por favor, tente novamente.';
                 });
+        });
+
+        // Script para inserir dados
+        document.getElementById('insert-data-button').addEventListener('click', function() {
+            const inputData = document.getElementById('insert-data').value;
+            if (!inputData) {
+                alert('Por favor, insira os dados no formato JSON.');
+                return;
+            }
+
+            try {
+                const jsonData = JSON.parse(inputData);
+
+                fetch('/insert_data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(jsonData),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result-content').textContent = `Dados inseridos com sucesso: \n${JSON.stringify(data, null, 2)}`;
+                })
+                .catch(error => {
+                    document.getElementById('result-content').textContent = 'Erro ao inserir dados. Por favor, tente novamente.';
+                });
+            } catch (e) {
+                alert('Erro: O formato de dados não é válido JSON.');
+            }
         });
     </script>
 </body>

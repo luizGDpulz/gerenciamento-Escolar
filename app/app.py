@@ -1,5 +1,5 @@
 from flask import Flask
-from models import db
+from models import db, Usuario
 from sqlalchemy.exc import SQLAlchemyError
 import time
 import os  # Adicione esta linha
@@ -51,8 +51,15 @@ def create_app():
         def db_error():
             return "Erro de conexão com o banco de dados. Por favor, verifique as configurações e tente novamente."
 
+    with app.app_context():
+        # novo_usuario = Usuario.criar_usuario(nome='Kelvin', cargo='cantor de boyband', email='kelvin@gmail.com', senha='senha1')
+        # db.session.add(novo_usuario)
+        # db.session.commit()  # Não esqueça de confirmar a sessão
+        pass
+
     return app
 
 if __name__ == '__main__':
     app = create_app()
     app.run(debug=True)
+    
