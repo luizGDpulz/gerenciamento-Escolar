@@ -34,6 +34,7 @@ class RouteManager:
                 debug_message = f"Conexão com o banco de dados bem-sucedida. Resultado: {result[0]}"
                 print(debug_message)  # Para depuração no console
                 return render_template('teste_db.html', debug_message=debug_message)
+            
             except Exception as e:
                 # Registre o erro para depuração
                 error_message = f"Erro ao conectar ao banco de dados: {str(e)}"
@@ -46,28 +47,29 @@ class RouteManager:
                 result = []
                 if query_name == 'listar_usuarios':
                     result = [{'ID': u.ID_usuario, 'Nome': u.Nome, 'Cargo': u.Cargo, 'Email': u.Email} for u in Usuario.listar_usuarios()]
-                elif query_name == 'listar_predios':
-                    result = [{'ID': p.ID_predio, 'Nome': p.Nome, 'Andares': p.Andares, 'Cor': p.Cor} for p in Predio.listar_predios()]
-                elif query_name == 'listar_andares':
-                    result = [{'ID': a.ID_andar, 'Numero': a.Numero, 'ID_predio': a.ID_predio} for a in Andar.listar_andares()]
-                elif query_name == 'listar_salas':
-                    result = [{'ID': s.ID_sala, 'Tipo': s.Tipo, 'ID_andar': s.ID_andar, 'Capacidade': s.Capacidade} for s in Sala.listar_salas()]
-                elif query_name == 'listar_recursos':
-                    result = [{'ID': r.ID_recurso, 'Nome': r.Nome, 'ID_sala': r.ID_sala, 'Identificacao': r.Identificacao, 'Status': r.Status} for r in Recurso.listar_recursos()]
-                elif query_name == 'listar_recursos_alugaveis':
-                    result = [{'ID': ra.ID_recurso_alugavel, 'Quantidade': ra.Quantidade, 'Identificacao': ra.Identificacao, 'Status': ra.Status} for ra in RecursoAlugavel.listar_recursos_alugaveis()]
-                elif query_name == 'listar_turmas':
-                    result = [{'ID': t.ID_turma, 'Quantidade': t.Quantidade, 'Data_inicio': t.Data_inicio.isoformat(), 'Data_Fim': t.Data_Fim.isoformat(), 'ID_turno': t.ID_turno, 'Curso': t.Curso, 'Cor': t.Cor} for t in Turma.listar_turmas()]
-                elif query_name == 'listar_dias':
-                    result = [{'ID': d.ID_dia, 'Nome': d.Nome} for d in Dia.listar_dias()]
-                elif query_name == 'listar_professores':
-                    result = [{'ID': p.ID_professor, 'Nome': p.Nome, 'Area': p.Area, 'CargaHoraria': p.CargaHoraria, 'TipoContrato': p.TipoContrato} for p in Professor.listar_professores()]
-                elif query_name == 'listar_agendamentos':
-                    result = [{'ID': a.ID_agendamento, 'TimeStamp_inicio': a.TimeStamp_inicio.isoformat(), 'ID_locatario': a.ID_locatario, 'Tipo_locatario': a.Tipo_locatario, 'ID_turma': a.ID_turma, 'TimeStamp_fim': a.TimeStamp_fim.isoformat()} for a in Agendamento.listar_agendamentos()]
-                elif query_name == 'listar_turnos':
-                    result = [{'ID': t.ID_turno, 'Nome_turno': t.Nome_turno, 'HorarioInicio': t.HorarioInicio.isoformat(), 'HorarioFim': t.HorarioFim.isoformat(), 'Cor': t.Cor} for t in Turno.listar_turnos()]
-                elif query_name == 'listar_disponibilidades':
-                    result = [{'ID': d.ID, 'ID_dia': d.ID_dia, 'ID_turno': d.ID_turno} for d in Disponibilidade.listar_disponibilidades()]
+        
+                # elif query_name == 'listar_predios':
+                #     result = [{'ID': p.ID_predio, 'Nome': p.Nome, 'Andares': p.Andares, 'Cor': p.Cor} for p in Predio.listar_predios()]
+                # elif query_name == 'listar_andares':
+                #     result = [{'ID': a.ID_andar, 'Numero': a.Numero, 'ID_predio': a.ID_predio} for a in Andar.listar_andares()]
+                # elif query_name == 'listar_salas':
+                #     result = [{'ID': s.ID_sala, 'Tipo': s.Tipo, 'ID_andar': s.ID_andar, 'Capacidade': s.Capacidade} for s in Sala.listar_salas()]
+                # elif query_name == 'listar_recursos':
+                #     result = [{'ID': r.ID_recurso, 'Nome': r.Nome, 'ID_sala': r.ID_sala, 'Identificacao': r.Identificacao, 'Status': r.Status} for r in Recurso.listar_recursos()]
+                # elif query_name == 'listar_recursos_alugaveis':
+                #     result = [{'ID': ra.ID_recurso_alugavel, 'Quantidade': ra.Quantidade, 'Identificacao': ra.Identificacao, 'Status': ra.Status} for ra in RecursoAlugavel.listar_recursos_alugaveis()]
+                # elif query_name == 'listar_turmas':
+                #     result = [{'ID': t.ID_turma, 'Quantidade': t.Quantidade, 'Data_inicio': t.Data_inicio.isoformat(), 'Data_Fim': t.Data_Fim.isoformat(), 'ID_turno': t.ID_turno, 'Curso': t.Curso, 'Cor': t.Cor} for t in Turma.listar_turmas()]
+                # elif query_name == 'listar_dias':
+                #     result = [{'ID': d.ID_dia, 'Nome': d.Nome} for d in Dia.listar_dias()]
+                # elif query_name == 'listar_professores':
+                #     result = [{'ID': p.ID_professor, 'Nome': p.Nome, 'Area': p.Area, 'CargaHoraria': p.CargaHoraria, 'TipoContrato': p.TipoContrato} for p in Professor.listar_professores()]
+                # elif query_name == 'listar_agendamentos':
+                #     result = [{'ID': a.ID_agendamento, 'TimeStamp_inicio': a.TimeStamp_inicio.isoformat(), 'ID_locatario': a.ID_locatario, 'Tipo_locatario': a.Tipo_locatario, 'ID_turma': a.ID_turma, 'TimeStamp_fim': a.TimeStamp_fim.isoformat()} for a in Agendamento.listar_agendamentos()]
+                # elif query_name == 'listar_turnos':
+                #     result = [{'ID': t.ID_turno, 'Nome_turno': t.Nome_turno, 'HorarioInicio': t.HorarioInicio.isoformat(), 'HorarioFim': t.HorarioFim.isoformat(), 'Cor': t.Cor} for t in Turno.listar_turnos()]
+                # elif query_name == 'listar_disponibilidades':
+                #     result = [{'ID': d.ID, 'ID_dia': d.ID_dia, 'ID_turno': d.ID_turno} for d in Disponibilidade.listar_disponibilidades()]
                 else:
                     return jsonify({'error': 'Consulta não reconhecida'}), 400
                 
@@ -75,6 +77,34 @@ class RouteManager:
             except Exception as e:
                 return jsonify({'error': str(e)}), 500
 
+        @self.main_routes.route('/insert_data', methods=['POST'])
+        def insert_data():
+            try:
+                data = request.get_json()
+    
+                nome = data.get('nome')
+                cargo = data.get('cargo')
+                email = data.get('email')
+                senha = data.get('senha')
+
+                if not nome or not cargo or not email or not senha:
+                    return jsonify({'error': 'Faltam dados obrigatórios'}), 400
+
+                # Cria um novo usuário
+                novo_usuario = Usuario.criar_usuario(nome=nome, cargo=cargo, email=email, senha=senha)
+                
+                return jsonify({
+                    'message': 'Usuário criado com sucesso!',
+                    'usuario': {
+                        'ID': novo_usuario.ID_usuario,
+                        'Nome': novo_usuario.Nome,
+                        'Cargo': novo_usuario.Cargo,
+                        'Email': novo_usuario.Email
+                    }
+                })
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+            
         # Rotas de autenticação e cadastro (auth_routes)
         @self.auth_routes.route('/login')
         def login():
@@ -83,7 +113,7 @@ class RouteManager:
         @self.auth_routes.route('/register_student')
         def register_student():
             return "Cadastro de Aluno"
-        
+            
         # # Rota para registrar uma nova turma
         # @self.main_routes.route('/register_class', methods=['GET', 'POST'])
         # def register_class():
