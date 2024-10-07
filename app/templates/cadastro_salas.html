@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Cadastro</title>
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body.light-mode {
+            background-color: #f8f9fa;
+            color: #000;
+        }
+
+        body.dark-mode {
+            background-color: #212529;  
+        }
+
+        .navbar {
+            padding: 1rem;
+        }
+
+        .form-section {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .form-section {
+            background-color: #343a40;
+            color: #ffffff;
+        }
+
+        .theme-switch {
+            margin-right: 1rem;
+            cursor: pointer;
+            color: #000;
+        }
+
+        body.dark-mode .theme-switch {
+            color: #000000;
+        }
+
+        .back-button {
+            margin-right: 1rem;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+
+        .back-button:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            color: #000;
+        }
+
+        body.dark-mode footer {
+            background-color: #212529;
+            color: #ffffff;
+        }
+
+        body.dark-mode .navbar {
+            background-color: #343a40;
+        }
+
+        .nav-tabs .nav-link {
+            color: #000;
+        }
+
+        body.dark-mode .nav-tabs .nav-link {
+            color: #fff;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        body.dark-mode .nav-tabs .nav-link.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body class="light-mode">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a href="#" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="mx-auto">
+                <a href="#" class="navbar-brand">
+                    <img src="../static/logo.png" alt="Logo do Sistema" height="100">
+                </a>
+            </div>
+            <div class="d-flex">
+                <i id="theme-switch" class="fas fa-adjust theme-switch"></i>
+                <div class="dropdown">
+                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="userMenu"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                        <li><a class="dropdown-item" href="#">Configurações</a></li>
+                        <li><a class="dropdown-item" href="#">Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs justify-content-center mt-4">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#cadastro_salas">Cadastro de Salas</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#cadastro_turmas">Cadastro de Turmas</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#cadastro_predios">Cadastro de Prédios</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#cadastro_andares">Cadastro de Andares</a>
+        </li>
+    </ul>
+
+    <!-- Tab content -->
+    <div class="tab-content">
+        <!-- Cadastro de Salas -->
+        <div class="tab-pane container active" id="cadastro_salas">
+            <section class="form-section">
+                <h3>Cadastro de Salas</h3>
+                <form>
+                    <div class="mb-3">
+                        <label for="nomeSala" class="form-label">Nome da Sala</label>
+                        <input type="text" class="form-control" id="nomeSala" placeholder="Digite o nome da sala" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="capacidadeSala" class="form-label">Capacidade</label>
+                        <input type="number" class="form-control" id="capacidadeSala" placeholder="Capacidade da sala" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tipoSala" class="form-label">Tipo da Sala</label>
+                        <input type="text" class="form-control" id="tipoSala" placeholder="Digite o tipo da sala" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="corSala" class="form-label">Cor de Destaque</label>
+                        <input type="color" class="form-control form-control-color" id="corSala" value="#563d7c" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Registrar Sala</button>
+                </form>
+            </section>
+        </div>
+
+        <!-- Cadastro de Turmas -->
+        <div class="tab-pane container fade" id="cadastro_turmas">
+            <section class="form-section">
+                <h3>Cadastro de Turmas</h3>
+                <form>
+                    <div class="mb-3">
+                        <label for="horarioInicio" class="form-label">Horário de Início</label>
+                        <input type="time" class="form-control" id="horarioInicio" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="horarioFim" class="form-label">Horário de Fim</label>
+                        <input type="time" class="form-control" id="horarioFim" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="corTurma" class="form-label">Cor da Turma</label>
+                        <input type="color" class="form-control form-control-color" id="corTurma" value="#563d7c" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Registrar Turma</button>
+                </form>
+            </section>
+        </div>
+
+        <!-- Cadastro de Prédios -->
+        <div class="tab-pane container fade" id="cadastro_predios">
+            <section class="form-section">
+                <h3>Cadastro de Prédios</h3>
+                <form>
+                    <div class="mb-3">
+                        <label for="nomePredio" class="form-label">Nome do Prédio</label>
+                        <input type="text" class="form-control" id="nomePredio" placeholder="Digite o nome do prédio" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="andaresPredio" class="form-label">Número de Andares</label>
+                        <input type="number" class="form-control" id="andaresPredio" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="corPredio" class="form-label">Cor do Prédio</label>
+                        <input type="color" class="form-control form-control-color" id="corPredio" value="#563d7c" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Registrar Prédio</button>
+                </form>
+            </section>
+        </div>
+
+        <!-- Cadastro de Andares -->
+        <div class="tab-pane container fade" id="cadastro_andares">
+            <section class="form-section">
+                <h3>Cadastro de Andares</h3>
+                <form>
+                    <div class="mb-3">
+                        <label for="numeroAndar" class="form-label">Número do Andar</label>
+                        <input type="number" class="form-control" id="numeroAndar" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="predioAndar" class="form-label">Prédio</label>
+                        <input type="text" class="form-control" id="predioAndar" placeholder="Digite o nome do prédio" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="corAndar" class="form-label">Cor do Andar</label>
+                        <input type="color" class="form-control form-control-color" id="corAndar" value="#563d7c" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Registrar Andar</button>
+                </form>
+            </section>
+        </div>
+    </div>
+    <footer>
+        <div id="footer-time"></div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Alternar entre modos claro e escuro
+        const themeSwitch = document.getElementById('theme-switch');
+        themeSwitch.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('light-mode');
+        });
+
+        // Data e hora no rodapé
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            const dateString = now.toLocaleDateString('pt-BR');
+            document.getElementById('footer-time').textContent = Data: ${dateString} | Hora: ${timeString};
+        }
+
+        setInterval(updateTime, 1000); // Atualiza a cada segundo
+        updateTime();
+    </script>
+</body>
+
+</html>

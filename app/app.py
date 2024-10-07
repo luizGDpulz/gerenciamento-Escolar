@@ -1,10 +1,14 @@
 from flask import Flask
-from models import db
+from models import db, Usuario
 from sqlalchemy.exc import SQLAlchemyError
 import time
+import os  # Adicione esta linha
 
 def create_app():
     app = Flask(__name__)
+
+    # Adicione estas linhas para configurar a chave secreta
+    app.secret_key = os.environ.get('SECRET_KEY') or 'uma_chave_secreta_muito_secreta'
 
     # Configuração do banco de dados
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://app_user:QWxVbk9zVERz@alunostds.dev.br:3308/app_user'
@@ -47,8 +51,15 @@ def create_app():
         def db_error():
             return "Erro de conexão com o banco de dados. Por favor, verifique as configurações e tente novamente."
 
+    with app.app_context():
+        # novo_usuario = Usuario.criar_usuario(nome='Kelvin', cargo='cantor de boyband', email='kelvin@gmail.com', senha='senha1')
+        # db.session.add(novo_usuario)
+        # db.session.commit()  # Não esqueça de confirmar a sessão
+        pass
+
     return app
 
 if __name__ == '__main__':
     app = create_app()
     app.run(debug=True)
+    
