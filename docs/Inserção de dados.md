@@ -1,5 +1,4 @@
 # Inserção de Dados
----
 Este documento descreve como realizar a inserção de dados nas tabelas do banco de dados do Sistema de Gerenciamento Escolar. Abaixo estão os exemplos de comandos SQL para cada uma das tabelas.
 ---
 ## Tabela `agendamentos`
