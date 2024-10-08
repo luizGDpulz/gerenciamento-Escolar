@@ -1,123 +1,126 @@
-## Inserindo Dados no Banco de Dados
-
-### 1. Inserindo dados na tabela `usuarios`
-A tabela `usuarios` contém informações sobre os usuários do sistema (como professores e locatários).
-
-```sql
-INSERT INTO usuarios (Nome, Cargo, Email, Senha) 
-VALUES ('Maria Silva', 'Professora', 'maria.silva@escola.com', 'senha123');
-```
-
-### 2. Inserindo dados na tabela `professores`
-A tabela `professores` armazena informações sobre os professores.
-
-```sql
-INSERT INTO professores (Nome, Area, CargaHoraria, TipoContrato, ID_disponibilidade) 
-VALUES ('Carlos Lima', 'Matemática', 40, 'Integral', NULL);
-```
-
-### 3. Inserindo dados na tabela `turmas`
-A tabela `turmas` armazena informações sobre as turmas.
-
-```sql
-INSERT INTO turmas (Quantidade, Data_inicio, Data_fim, ID_turno, Curso, Cor) 
-VALUES (30, '2024-01-10', '2024-12-15', 1, 'Matemática Avançada', '#FF5733');
-```
-
-### 4. Inserindo dados na tabela `salas`
-A tabela `salas` armazena informações sobre as salas do prédio escolar.
-
-```sql
-INSERT INTO salas (Tipo, ID_andar, Capacidade) 
-VALUES ('Laboratório', 2, 25);
-```
-
-### 5. Inserindo dados na tabela `agendamentos`
-A tabela `agendamentos` gerencia o agendamento de recursos e salas.
-
-```sql
-INSERT INTO agendamentos (TimeStamp_inicio, ID_locatario, Tipo_locatario, ID_turma, TimeStamp_fim) 
-VALUES ('2024-09-28 08:00:00', 1, 'Professor', 1, '2024-09-28 10:00:00');
-```
-
-### 6. Inserindo dados na tabela `recursos`
-A tabela `recursos` armazena informações sobre os recursos disponíveis nas salas.
-
-```sql
-INSERT INTO recursos (Nome, ID_sala, Identificacao, Status) 
-VALUES ('Projetor', 1, 'PJ-001', 'Disponível');
-```
-
-### 7. Inserindo dados na tabela `turnos`
-A tabela `turnos` contém informações sobre os turnos de aulas.
-
-```sql
-INSERT INTO turnos (Nome_turno, HorarioInicio, HorarioFim, Cor) 
-VALUES ('Matutino', '08:00:00', '12:00:00', '#FF5733');
-```
-
+# Inserção de Dados
 ---
+Este documento descreve como realizar a inserção de dados nas tabelas do banco de dados do Sistema de Gerenciamento Escolar. Abaixo estão os exemplos de comandos SQL para cada uma das tabelas.
+---
+## Tabela `agendamentos`
 
-### 8. Inserindo dados na tabela `andares`
-A tabela `andares` armazena informações sobre os andares do prédio escolar.
-
+Inserção de dados para agendamento de uma sala ou recurso:
 ```sql
-INSERT INTO andares (Numero, ID_predio) 
-VALUES (2, 1);
+INSERT INTO `agendamentos` (`ID_agendamento`, `TimeStamp_inicio`, `ID_locatario`, `Tipo_locatario`, `ID_turma`, `TimeStamp_fim`)
+VALUES (1, '2024-10-01 08:00:00', 3, 'Professor', 2, '2024-10-01 10:00:00');
 ```
 
-### 9. Inserindo dados na tabela `dias`
-A tabela `dias` armazena informações sobre os dias da semana.
+## Tabela `andares`
 
+Inserção de um novo andar em um prédio:
 ```sql
-INSERT INTO dias (Nome_dia) 
-VALUES ('Segunda-feira');
+INSERT INTO `andares` (`ID_andar`, `Numero`, `ID_predio`)
+VALUES (1, 1, 1);
 ```
 
-### 10. Inserindo dados na tabela `disponibilidade`
-A tabela `disponibilidade` armazena informações sobre horários disponíveis.
+## Tabela `dias`
 
+Inserção de dias da semana:
 ```sql
-INSERT INTO disponibilidade (Data_inicio, Data_fim) 
-VALUES ('2024-01-01', '2024-12-31');
+INSERT INTO `dias` (`ID_dia`, `Nome`)
+VALUES (1, 'Segunda-feira'),
+       (2, 'Terça-feira'),
+       (3, 'Quarta-feira');
 ```
 
-### 11. Inserindo dados na tabela `disponibilidade_professores`
-A tabela `disponibilidade_professores` armazena a disponibilidade de professores.
+## Tabela `disponibilidade`
 
+Inserção de disponibilidade para um dia e turno:
 ```sql
-INSERT INTO disponibilidade_professores (ID_professor, ID_disponibilidade) 
-VALUES (1, 1);
+INSERT INTO `disponibilidade` (`ID_disponibilidade`, `ID_dia`, `ID_turno`)
+VALUES (1, 1, 1);
 ```
 
-### 12. Inserindo dados na tabela `predios`
-A tabela `predios` armazena informações sobre os prédios da instituição.
+## Tabela `disponibilidade_professores`
 
+Inserção de disponibilidade de um professor:
 ```sql
-INSERT INTO predios (Nome, Endereco) 
-VALUES ('Prédio Principal', 'Rua das Flores, 123');
+INSERT INTO `disponibilidade_professores` (`ID_disponibilidade_professor`, `ID_professor`, `ID_disponibilidade`)
+VALUES (1, 2, 1);
 ```
 
-### 13. Inserindo dados na tabela `recursos_alugaveis`
-A tabela `recursos_alugaveis` armazena informações sobre os recursos que podem ser alugados.
+## Tabela `predios`
 
+Inserção de um novo prédio:
 ```sql
-INSERT INTO recursos_alugaveis (Nome, Tipo, Status) 
-VALUES ('Quadra de Esportes', 'Esportivo', 'Disponível');
+INSERT INTO `predios` (`ID_predio`, `Nome`, `Andares`, `Cor`)
+VALUES (1, 'Prédio A', 5, 'Azul');
 ```
 
-### 14. Inserindo dados na tabela `recursos_alugaveis_disponibilidade`
-A tabela `recursos_alugaveis_disponibilidade` gerencia a disponibilidade dos recursos alugáveis.
+## Tabela `professores`
 
+Inserção de um novo professor:
 ```sql
-INSERT INTO recursos_alugaveis_disponibilidade (ID_recurso_alugavel, Data_inicio, Data_fim) 
-VALUES (1, '2024-09-01', '2024-09-30');
+INSERT INTO `professores` (`ID_professor`, `Nome`, `Area`, `CargaHoraria`, `TipoContrato`, `ID_disponibilidade`)
+VALUES (1, 'João da Silva', 'Matemática', 40, 'Integral', 1);
 ```
 
-### 15. Inserindo dados na tabela `turma_dias`
-A tabela `turma_dias` armazena os dias em que as turmas têm aulas.
+## Tabela `recursos`
 
+Inserção de recursos (por exemplo, projetores ou computadores) em uma sala:
 ```sql
-INSERT INTO turma_dias (ID_turma, ID_dia) 
-VALUES (1, 1);
+INSERT INTO `recursos` (`ID_recurso`, `Nome`, `ID_sala`, `Identificacao`, `Status`)
+VALUES (1, 'Projetor', 101, 'Proj-101', 'Disponível');
+```
+
+## Tabela `recursos_alugaveis`
+
+Inserção de recursos alugáveis (como mesas e cadeiras):
+```sql
+INSERT INTO `recursos_alugaveis` (`ID_recurso_alugavel`, `Quantidade`, `Identificacao`, `Status`, `ID_sala`)
+VALUES (1, 10, 'Mesa-101', 'Disponível', 101);
+```
+
+## Tabela `recursos_alugaveis_disponibilidade`
+
+Inserção de disponibilidade para aluguel de recursos:
+```sql
+INSERT INTO `recursos_alugaveis_disponibilidade` (`ID_recurso_alugavel_disponibilidade`, `Data`, `ID_turno`, `ID_recurso_alugavel`, `ID_locatario`, `Tipo_locatario`)
+VALUES (1, '2024-10-05', 1, 1, 2, 'Professor');
+```
+
+## Tabela `salas`
+
+Inserção de salas:
+```sql
+INSERT INTO `salas` (`ID_sala`, `Tipo`, `ID_andar`, `Capacidade`)
+VALUES (101, 'Laboratório', 1, 30);
+```
+
+## Tabela `turmas`
+
+Inserção de turmas:
+```sql
+INSERT INTO `turmas` (`ID_turma`, `Quantidade`, `Data_inicio`, `Data_fim`, `ID_turno`, `Curso`, `Cor`)
+VALUES (1, 30, '2024-01-10', '2024-06-30', 1, 'Matemática', 'Verde');
+```
+
+## Tabela `turma_dias`
+
+Inserção dos dias da semana em que uma turma ocorre:
+```sql
+INSERT INTO `turma_dias` (`ID_turma_dia`, `ID_turma`, `ID_dia`)
+VALUES (1, 1, 1),
+       (2, 1, 3);
+```
+
+## Tabela `turnos`
+
+Inserção de turnos:
+```sql
+INSERT INTO `turnos` (`ID_turno`, `Nome_turno`, `HorarioInicio`, `HorarioFim`, `Cor`)
+VALUES (1, 'Matutino', '08:00:00', '12:00:00', 'Azul');
+```
+
+## Tabela `usuarios`
+
+Inserção de usuários:
+```sql
+INSERT INTO `usuarios` (`ID_usuario`, `Nome`, `Cargo`, `Email`, `Senha`)
+VALUES (1, 'Carlos Santos', 'Professor', 'carlos.santos@email.com', 'senha123');
 ```
