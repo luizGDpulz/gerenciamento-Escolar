@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, session, send_file, send_from_directory
 from sqlalchemy import text
-from models import db, Usuario, Predio, Andar, Sala, Recurso, RecursoAlugavel, RecursoAlugavelDisponibilidade, Turma, TurmaDia, Dia, Professor, DisponibilidadeProfessor, Agendamento, Turno, Disponibilidade
-from werkzeug.security import check_password_hash
+from models import *
+from werkzeug.security import check_password_hash, generate_password_hash
 import logging
+from datetime import datetime, timedelta
+import os
 
 # Configuração do logging
 logging.basicConfig(level=logging.DEBUG)
@@ -22,27 +24,24 @@ class RouteManager:
         # Rotas principais (main_routes)
         @self.main_routes.route('/')
         def main_menu():
-            return "Sistema de gerenciamento de salas iniciado"
+            return render_template('main_menu.html')
 
         @self.main_routes.route('/about')
         def sobre():
-            return "Este é o sistema para gerenciar salas e recursos da escola"
+            return render_template('about.html')
 
         @self.main_routes.route('/contato')
         def contato():
-            return "Contato: admin@escola.com"
+            return render_template('contato.html')
 
         @self.main_routes.route('/test_db')
         def test_db():
             try:
-                # Adicione aqui uma consulta simples ao banco de dados
                 result = db.session.execute(text("SELECT 1")).fetchone()
                 debug_message = f"Conexão com o banco de dados bem-sucedida. Resultado: {result[0]}"
                 logger.debug(debug_message)
                 return render_template('teste_db.html', debug_message=debug_message)
-            
             except Exception as e:
-                # Registre o erro para depuração
                 error_message = f"Erro ao conectar ao banco de dados: {str(e)}"
                 logger.error(error_message)
                 return render_template('teste_db.html', error_message=error_message)
@@ -52,30 +51,29 @@ class RouteManager:
             try:
                 result = []
                 if query_name == 'listar_usuarios':
-                    result = [{'ID': u.ID_usuario, 'Nome': u.Nome, 'Cargo': u.Cargo, 'Email': u.Email} for u in Usuario.listar_usuarios()]
-        
-                # elif query_name == 'listar_predios':
-                #     result = [{'ID': p.ID_predio, 'Nome': p.Nome, 'Andares': p.Andares, 'Cor': p.Cor} for p in Predio.listar_predios()]
-                # elif query_name == 'listar_andares':
-                #     result = [{'ID': a.ID_andar, 'Numero': a.Numero, 'ID_predio': a.ID_predio} for a in Andar.listar_andares()]
-                # elif query_name == 'listar_salas':
-                #     result = [{'ID': s.ID_sala, 'Tipo': s.Tipo, 'ID_andar': s.ID_andar, 'Capacidade': s.Capacidade} for s in Sala.listar_salas()]
-                # elif query_name == 'listar_recursos':
-                #     result = [{'ID': r.ID_recurso, 'Nome': r.Nome, 'ID_sala': r.ID_sala, 'Identificacao': r.Identificacao, 'Status': r.Status} for r in Recurso.listar_recursos()]
-                # elif query_name == 'listar_recursos_alugaveis':
-                #     result = [{'ID': ra.ID_recurso_alugavel, 'Quantidade': ra.Quantidade, 'Identificacao': ra.Identificacao, 'Status': ra.Status} for ra in RecursoAlugavel.listar_recursos_alugaveis()]
-                # elif query_name == 'listar_turmas':
-                #     result = [{'ID': t.ID_turma, 'Quantidade': t.Quantidade, 'Data_inicio': t.Data_inicio.isoformat(), 'Data_Fim': t.Data_Fim.isoformat(), 'ID_turno': t.ID_turno, 'Curso': t.Curso, 'Cor': t.Cor} for t in Turma.listar_turmas()]
-                # elif query_name == 'listar_dias':
-                #     result = [{'ID': d.ID_dia, 'Nome': d.Nome} for d in Dia.listar_dias()]
-                # elif query_name == 'listar_professores':
-                #     result = [{'ID': p.ID_professor, 'Nome': p.Nome, 'Area': p.Area, 'CargaHoraria': p.CargaHoraria, 'TipoContrato': p.TipoContrato} for p in Professor.listar_professores()]
-                # elif query_name == 'listar_agendamentos':
-                #     result = [{'ID': a.ID_agendamento, 'TimeStamp_inicio': a.TimeStamp_inicio.isoformat(), 'ID_locatario': a.ID_locatario, 'Tipo_locatario': a.Tipo_locatario, 'ID_turma': a.ID_turma, 'TimeStamp_fim': a.TimeStamp_fim.isoformat()} for a in Agendamento.listar_agendamentos()]
-                # elif query_name == 'listar_turnos':
-                #     result = [{'ID': t.ID_turno, 'Nome_turno': t.Nome_turno, 'HorarioInicio': t.HorarioInicio.isoformat(), 'HorarioFim': t.HorarioFim.isoformat(), 'Cor': t.Cor} for t in Turno.listar_turnos()]
-                # elif query_name == 'listar_disponibilidades':
-                #     result = [{'ID': d.ID, 'ID_dia': d.ID_dia, 'ID_turno': d.ID_turno} for d in Disponibilidade.listar_disponibilidades()]
+                    result = [{'ID': u.ID_usuario, 'Nome': u.Nome, 'Cargo': u.Cargo, 'Email': u.Email} for u in Usuario.query.all()]
+                elif query_name == 'listar_predios':
+                    result = [{'ID': p.ID_predio, 'Nome': p.Nome, 'Andares': p.Andares, 'Cor': p.Cor} for p in Predio.query.all()]
+                elif query_name == 'listar_andares':
+                    result = [{'ID': a.ID_andar, 'Numero': a.Numero, 'ID_predio': a.ID_predio} for a in Andar.query.all()]
+                elif query_name == 'listar_salas':
+                    result = [{'ID': s.ID_sala, 'Tipo': s.Tipo, 'ID_andar': s.ID_andar, 'Capacidade': s.Capacidade} for s in Sala.query.all()]
+                elif query_name == 'listar_recursos':
+                    result = [{'ID': r.ID_recurso, 'Nome': r.Nome, 'ID_sala': r.ID_sala, 'Identificacao': r.Identificacao, 'Status': r.Status} for r in Recurso.query.all()]
+                elif query_name == 'listar_recursos_alugaveis':
+                    result = [{'ID': ra.ID_recurso_alugavel, 'Quantidade': ra.Quantidade, 'Identificacao': ra.Identificacao, 'Status': ra.Status} for ra in RecursoAlugavel.query.all()]
+                elif query_name == 'listar_turmas':
+                    result = [{'ID': t.ID_turma, 'Quantidade': t.Quantidade, 'Data_inicio': t.Data_inicio.isoformat(), 'Data_Fim': t.Data_Fim.isoformat(), 'ID_turno': t.ID_turno, 'Curso': t.Curso, 'Cor': t.Cor} for t in Turma.query.all()]
+                elif query_name == 'listar_dias':
+                    result = [{'ID': d.ID_dia, 'Nome': d.Nome} for d in Dia.query.all()]
+                elif query_name == 'listar_professores':
+                    result = [{'ID': p.ID_professor, 'Nome': p.Nome, 'Area': p.Area, 'CargaHoraria': p.CargaHoraria, 'TipoContrato': p.TipoContrato} for p in Professor.query.all()]
+                elif query_name == 'listar_agendamentos':
+                    result = [{'ID': a.ID_agendamento, 'TimeStamp_inicio': a.TimeStamp_inicio.isoformat(), 'ID_locatario': a.ID_locatario, 'Tipo_locatario': a.Tipo_locatario, 'ID_turma': a.ID_turma, 'TimeStamp_fim': a.TimeStamp_fim.isoformat()} for a in Agendamento.query.all()]
+                elif query_name == 'listar_turnos':
+                    result = [{'ID': t.ID_turno, 'Nome_turno': t.Nome_turno, 'HorarioInicio': t.HorarioInicio.isoformat(), 'HorarioFim': t.HorarioFim.isoformat(), 'Cor': t.Cor} for t in Turno.query.all()]
+                elif query_name == 'listar_disponibilidades':
+                    result = [{'ID': d.ID, 'ID_dia': d.ID_dia, 'ID_turno': d.ID_turno} for d in Disponibilidade.query.all()]
                 else:
                     return jsonify({'error': 'Consulta não reconhecida'}), 400
                 
@@ -97,8 +95,10 @@ class RouteManager:
                 if not nome or not cargo or not email or not senha:
                     return jsonify({'error': 'Faltam dados obrigatórios'}), 400
 
-                # Cria um novo usuário
-                novo_usuario = Usuario.criar_usuario(nome=nome, cargo=cargo, email=email, senha=senha)
+                senha_hash = generate_password_hash(senha)
+                novo_usuario = Usuario(Nome=nome, Cargo=cargo, Email=email, Senha=senha_hash)
+                db.session.add(novo_usuario)
+                db.session.commit()
                 
                 return jsonify({
                     'message': 'Usuário criado com sucesso!',
@@ -110,6 +110,7 @@ class RouteManager:
                     }
                 })
             except Exception as e:
+                db.session.rollback()
                 return jsonify({'error': str(e)}), 500
             
         # Rotas de autenticação e cadastro (auth_routes)
@@ -120,19 +121,14 @@ class RouteManager:
                 senha = request.form['password']
                 logger.debug(f"Tentativa de login para o email: {email}")
                 usuario = Usuario.query.filter_by(Email=email).first()
-                if usuario:
-                    logger.debug(f"Usuário encontrado: {usuario.Nome}")
-                    if usuario.Senha == senha:
-                        session['user_id'] = usuario.ID_usuario
-                        logger.info(f"Login bem-sucedido para o usuário: {usuario.Nome}")
-                        flash('Login realizado com sucesso!', 'success')
-                        return jsonify({'success': True, 'redirect': url_for('main.dashboard')})
-                    else:
-                        logger.warning(f"Senha incorreta para o usuário: {usuario.Nome}, {senha} - {usuario.Senha}")
-                        return jsonify({'success': False, 'message': 'Senha incorreta. Por favor, tente novamente.'})
+                if usuario and check_password_hash(usuario.Senha, senha):
+                    session['user_id'] = usuario.ID_usuario
+                    logger.info(f"Login bem-sucedido para o usuário: {usuario.Nome}")
+                    flash('Login realizado com sucesso!', 'success')
+                    return jsonify({'success': True, 'redirect': url_for('main.dashboard')})
                 else:
-                    logger.warning(f"Tentativa de login com email não cadastrado: {email}")
-                    return jsonify({'success': False, 'message': 'Email não encontrado. Por favor, verifique o email ou registre-se.'})
+                    logger.warning(f"Falha no login para o email: {email}")
+                    return jsonify({'success': False, 'message': 'Credenciais inválidas. Por favor, tente novamente.'})
             return render_template('login.html')
 
         @self.auth_routes.route('/logout')
@@ -141,61 +137,246 @@ class RouteManager:
             flash('Você foi desconectado.', 'info')
             return redirect(url_for('auth.login'))
 
-        @self.auth_routes.route('/register_student')
+        @self.auth_routes.route('/register_student', methods=['GET', 'POST'])
         def register_student():
-            return "Cadastro de Aluno"
-        # Rota do dashboard
+            if request.method == 'POST':
+                nome = request.form['nome']
+                email = request.form['email']
+                senha = request.form['senha']
+                
+                if Usuario.query.filter_by(Email=email).first():
+                    flash('Email já cadastrado.', 'error')
+                    return redirect(url_for('auth.register_student'))
+                
+                novo_aluno = Usuario(Nome=nome, Cargo='Aluno', Email=email, Senha=generate_password_hash(senha))
+                db.session.add(novo_aluno)
+                db.session.commit()
+                
+                flash('Cadastro realizado com sucesso!', 'success')
+                return redirect(url_for('auth.login'))
+            
+            return render_template('register_student.html')
+
         @self.main_routes.route('/dashboard')
         def dashboard():
             if 'user_id' not in session:
                 logger.warning("Tentativa de acesso ao dashboard sem login")
                 flash('Por favor, faça login para acessar o dashboard.', 'error')
                 return redirect(url_for('auth.login'))
+            usuario = Usuario.query.get(session['user_id'])
             logger.info(f"Acesso ao dashboard pelo usuário ID: {session['user_id']}")
-            return render_template('dashboard.html')
+            return render_template('dashboard.html', usuario=usuario)
 
-        @self.auth_routes.route('/schedule')
+        @self.auth_routes.route('/schedule', methods=['GET', 'POST'])
         def schedule():
-            return "Agendamento de Aulas"
-        
-
-        # # Rota para registrar uma nova turma
-        # @self.main_routes.route('/register_class', methods=['GET', 'POST'])
-        # def register_class():
-        #     if request.method == 'POST':
-        #         # Lógica para registrar uma nova turma
-        #         nova_sala = Sala(nome=request.form['name'])
-        #         db.session.add(nova_sala)
-        #         db.session.commit()
-        #         flash('Turma registrada com sucesso!', 'success')
-        #         return redirect(url_for('main.dashboard'))
-        #     return render_template('register_class.html')
-
-        # # Rota para agendar salas de aula
-        # @self.main_routes.route('/schedule_classrooms', methods=['GET', 'POST'])
-        # def schedule_classrooms():
-        #     if request.method == 'POST':
-        #         # Lógica para agendar salas de aula
-        #         sala = Sala.query.get(request.form['classroom_id'])
-        #         # Adicione aqui a lógica de agendamento
-        #         flash('Sala de aula agendada com sucesso!', 'success')
-        #         return redirect(url_for('main.dashboard'))
+            if 'user_id' not in session:
+                flash('Por favor, faça login para agendar aulas.', 'error')
+                return redirect(url_for('auth.login'))
             
-        #     salas = Sala.query.all()
-        #     return render_template('schedule_classrooms.html', classrooms=salas)
+            if request.method == 'POST':
+                sala_id = request.form['sala_id']
+                data = request.form['data']
+                horario_inicio = request.form['horario_inicio']
+                horario_fim = request.form['horario_fim']
+                
+                timestamp_inicio = datetime.strptime(f"{data} {horario_inicio}", "%Y-%m-%d %H:%M")
+                timestamp_fim = datetime.strptime(f"{data} {horario_fim}", "%Y-%m-%d %H:%M")
+                
+                novo_agendamento = Agendamento(
+                    TimeStamp_inicio=timestamp_inicio,
+                    TimeStamp_fim=timestamp_fim,
+                    ID_locatario=session['user_id'],
+                    Tipo_locatario='Aluno',
+                    ID_turma=None  # Assumindo que alunos não estão associados a turmas específicas
+                )
+                db.session.add(novo_agendamento)
+                db.session.commit()
+                
+                flash('Aula agendada com sucesso!', 'success')
+                return redirect(url_for('main.dashboard'))
+            
+            salas = Sala.query.all()
+            return render_template('schedule.html', salas=salas)
 
-        # Novas rotas
-        @self.main_routes.route('/schedule/classrooms', methods=['POST'])
+        @self.main_routes.route('/schedule/classrooms', methods=['GET', 'POST'])
         def schedule_classroom():
-            return render_template('codigo.html')
+            if 'user_id' not in session:
+                flash('Por favor, faça login para agendar salas.', 'error')
+                return redirect(url_for('auth.login'))
+            
+            if request.method == 'POST':
+                sala_id = request.form['sala_id']
+                data_inicio = request.form['data_inicio']
+                data_fim = request.form['data_fim']
+                horario_inicio = request.form['horario_inicio']
+                horario_fim = request.form['horario_fim']
+                
+                sala = Sala.query.get(sala_id)
+                if not sala:
+                    flash('Sala não encontrada.', 'error')
+                    return redirect(url_for('main.schedule_classroom'))
+                
+                data_inicio = datetime.strptime(data_inicio, "%Y-%m-%d")
+                data_fim = datetime.strptime(data_fim, "%Y-%m-%d")
+                
+                while data_inicio <= data_fim:
+                    timestamp_inicio = datetime.combine(data_inicio, datetime.strptime(horario_inicio, "%H:%M").time())
+                    timestamp_fim = datetime.combine(data_inicio, datetime.strptime(horario_fim, "%H:%M").time())
+                    
+                    agendamento = Agendamento(
+                        TimeStamp_inicio=timestamp_inicio,
+                        TimeStamp_fim=timestamp_fim,
+                        ID_locatario=session['user_id'],
+                        Tipo_locatario='Professor',
+                        ID_turma=None
+                    )
+                    db.session.add(agendamento)
+                    data_inicio += timedelta(days=1)
+                
+                db.session.commit()
+                flash('Sala agendada com sucesso!', 'success')
+                return redirect(url_for('main.dashboard'))
+            
+            salas = Sala.query.all()
+            return render_template('schedule_classroom.html', salas=salas)
 
-        @self.main_routes.route('/register-build', methods=['POST'])
+        @self.main_routes.route('/register-build', methods=['GET', 'POST'])
         def register_build():
-            return render_template('codigo.html')
+            if 'user_id' not in session:
+                flash('Por favor, faça login para registrar prédios.', 'error')
+                return redirect(url_for('auth.login'))
+            
+            if request.method == 'POST':
+                nome = request.form['nome']
+                andares = request.form['andares']
+                cor = request.form['cor']
+                
+                novo_predio = Predio(Nome=nome, Andares=andares, Cor=cor)
+                db.session.add(novo_predio)
+                db.session.commit()
+                
+                for i in range(1, int(andares) + 1):
+                    novo_andar = Andar(Numero=i, ID_predio=novo_predio.ID_predio)
+                    db.session.add(novo_andar)
+                
+                db.session.commit()
+                flash('Prédio registrado com sucesso!', 'success')
+                return redirect(url_for('main.dashboard'))
+            
+            return render_template('register_build.html')
         
-        @self.main_routes.route('/register-classroom', methods=['POST'])
+        @self.main_routes.route('/register-classroom', methods=['GET', 'POST'])
         def register_classroom():
-            return render_template('codigo.html')
+            if 'user_id' not in session:
+                flash('Por favor, faça login para registrar salas.', 'error')
+                return redirect(url_for('auth.login'))
+            
+            if request.method == 'POST':
+                tipo = request.form['tipo']
+                id_andar = request.form['id_andar']
+                capacidade = request.form['capacidade']
+                
+                nova_sala = Sala(Tipo=tipo, ID_andar=id_andar, Capacidade=capacidade)
+                db.session.add(nova_sala)
+                db.session.commit()
+                
+                flash('Sala registrada com sucesso!', 'success')
+                return redirect(url_for('main.dashboard'))
+            
+            andares = Andar.query.all()
+            return render_template('register_classroom.html', andares=andares)
 
+        @self.main_routes.route('/register-resource', methods=['GET', 'POST'])
+        def register_resource():
+            if 'user_id' not in session:
+                flash('Por favor, faça login para registrar recursos.', 'error')
+                return redirect(url_for('auth.login'))
+            
+            if request.method == 'POST':
+                nome = request.form['nome']
+                id_sala = request.form['id_sala']
+                identificacao = request.form['identificacao']
+                status = request.form['status']
+                
+                novo_recurso = Recurso(Nome=nome, ID_sala=id_sala, Identificacao=identificacao, Status=status)
+                db.session.add(novo_recurso)
+                db.session.commit()
+                
+                flash('Recurso registrado com sucesso!', 'success')
+                return redirect(url_for('main.dashboard'))
+            
+            salas = Sala.query.all()
+            return render_template('register_resource.html', salas=salas)
+
+        @self.main_routes.route('/register-class', methods=['GET', 'POST'])
+        def register_class():
+            if 'user_id' not in session:
+                flash('Por favor, faça login para registrar turmas.', 'error')
+                return redirect(url_for('auth.login'))
+            
+            if request.method == 'POST':
+                quantidade = request.form['quantidade']
+                data_inicio = request.form['data_inicio']
+                data_fim = request.form['data_fim']
+                id_turno = request.form['id_turno']
+                curso = request.form['curso']
+                cor = request.form['cor']
+                dias = request.form.getlist('dias')
+                
+                nova_turma = Turma(
+                    Quantidade=quantidade,
+                    Data_inicio=datetime.strptime(data_inicio, "%Y-%m-%d"),
+                    Data_Fim=datetime.strptime(data_fim, "%Y-%m-%d"),
+                    ID_turno=id_turno,
+                    Curso=curso,
+                    Cor=cor
+                )
+                db.session.add(nova_turma)
+                db.session.commit()
+                
+                for dia_id in dias:
+                    turma_dia = TurmaDia(ID_turma=nova_turma.ID_turma, ID_dia=dia_id)
+                    db.session.add(turma_dia)
+                
+                db.session.commit()
+                flash('Turma registrada com sucesso!', 'success')
+                return redirect(url_for('main.dashboard'))
+            
+            turnos = Turno.query.all()
+            dias = Dia.query.all()
+            return render_template('register_class.html', turnos=turnos, dias=dias)
+
+        @self.main_routes.route('/register-professor', methods=['GET', 'POST'])
+        def register_professor():
+            if 'user_id' not in session:
+                flash('Por favor, faça login para registrar professores.', 'error')
+                return redirect(url_for('auth.login'))
+            
+            if request.method == 'POST':
+                nome = request.form['nome']
+                area = request.form['area']
+                carga_horaria = request.form['carga_horaria']
+                tipo_contrato = request.form['tipo_contrato']
+                disponibilidades = request.form.getlist('disponibilidades')
+                
+                novo_professor = Professor(Nome=nome, Area=area, CargaHoraria=carga_horaria, TipoContrato=tipo_contrato)
+                db.session.add(novo_professor)
+                db.session.commit()
+                
+                for disp_id in disponibilidades:
+                    disponibilidade_professor = DisponibilidadeProfessor(ID_professor=novo_professor.ID_professor, ID_disponibilidade=disp_id)
+                    db.session.add(disponibilidade_professor)
+                
+                db.session.commit()
+                flash('Professor registrado com sucesso!', 'success')
+                return redirect(url_for('main.dashboard'))
+            
+            disponibilidades = Disponibilidade.query.all()
+            return render_template('register_professor.html', disponibilidades=disponibilidades)
+        
+        @self.main_routes.route('/static/img/<path:filename>')
+        def serve_image(filename):
+            return send_from_directory('templates/static/img', filename)
+        
 # Instanciando o gerenciador de rotas
 route_manager = RouteManager(main_routes, auth_routes)
