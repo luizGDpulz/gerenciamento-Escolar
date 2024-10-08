@@ -4,124 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClassManager</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Estilos inline mantidos para garantir a aplicação */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            background-color: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            max-width: 1200px;
+            width: 100%;
+            height: 600px;
+        }
+
+        .image-section {
+            background-color: #e6e6e6;
+            padding: 0px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 60%;
+        }
+
+        .image-section img {
+            max-width: 100%;
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .login-section {
+            padding: 50px;
+            background-color: #204d69;
+            color: white;
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-section h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .login-section form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-section label {
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .login-section input {
+            padding: 15px;
+            font-size: 18px;
+            margin-bottom: 30px;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+        }
+
+        .log-in {
+            background-color: #3ea8ff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .alert {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .alert-error {
+            background-color: #ffcccc;
+            color: #cc0000;
+        }
+
+        .alert-success {
+            background-color: #ccffcc;
+            color: #006600;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .image-section, .login-section {
+                width: 100%;
+            }
+
+            .image-section {
+                height: 300px;
+            }
+        }
+    </style>
     <script>
         console.log("Carregando página de login");
     </script>
 </head>
-<style>
-    /* Estilos inline mantidos para garantir a aplicação */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f0f0f0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-
-    .container {
-        display: flex;
-        background-color: #fff;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        border-radius: 10px;
-        overflow: hidden;
-        max-width: 1200px;
-        width: 100%;
-        height: 600px;
-    }
-
-    .image-section {
-        background-color: #e6e6e6;
-        padding: 0px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 60%;
-    }
-
-    .image-section img {
-        max-width: 100%;
-        height: 100%;
-        width: 100%;
-    }
-
-    .login-section {
-        padding: 50px;
-        background-color: #204d69;
-        color: white;
-        width: 40%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .login-section h1 {
-        font-size: 36px;
-        margin-bottom: 30px;
-        text-align: center;
-    }
-
-    .login-section form {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .login-section label {
-        margin-bottom: 12px;
-        font-size: 18px;
-    }
-
-    .login-section input {
-        padding: 15px;
-        font-size: 18px;
-        margin-bottom: 30px;
-        border: none;
-        border-radius: 8px;
-    }
-
-    .buttons {
-        display: flex;
-        justify-content: center;
-    }
-
-    .log-in {
-        background-color: #3ea8ff;
-        color: white;
-        border: none;
-        padding: 15px 30px;
-        font-size: 18px;
-        border-radius: 8px;
-        cursor: pointer;
-    }
-
-    .alert {
-        margin-top: 20px;
-        padding: 10px;
-        border-radius: 5px;
-        text-align: center;
-    }
-
-    .alert-error {
-        background-color: #ffcccc;
-        color: #cc0000;
-    }
-
-    .alert-success {
-        background-color: #ccffcc;
-        color: #006600;
-    }
-</style>
 <body>
     <div class="container">
         <div class="image-section">
-            <img src="{{ url_for('static', filename='imgs/img logo.jpg') }}" alt="Class Manager Icon">
+            <img src="{{ url_for('main.serve_image', filename='gato.png') }}" alt="Ícone do Class Manager">
         </div>
         <div class="login-section">
             <h1>Class Manager</h1>
