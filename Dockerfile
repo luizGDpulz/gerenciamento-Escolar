@@ -24,4 +24,4 @@ COPY . .
 EXPOSE 5000
 
 # Comando para rodar o aplicativo Flask com python3
-CMD ["python3", "app.py"]
+CMD ["python3", "app/app.py"]
