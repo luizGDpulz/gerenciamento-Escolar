@@ -23,5 +23,5 @@ COPY . .
 # Exponha a porta que o Flask vai utilizar
 EXPOSE 5000
 
-# Comando para rodar o Flask
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+# Comando para rodar o aplicativo Flask com python3
+CMD ["python3", "app.py"]
