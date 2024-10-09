@@ -24,7 +24,11 @@ class RouteManager:
         # Rotas principais (main_routes)
         @self.main_routes.route('/')
         def main_menu():
-            return render_template('main_menu.html')
+            return render_template('login.html')
+        
+        @self.main_routes.route('/cuzingo')
+        def cuzingo():
+            return render_template('cuzingo.html')
 
         @self.main_routes.route('/about')
         def sobre():
@@ -121,7 +125,7 @@ class RouteManager:
                 senha = request.form['password']
                 logger.debug(f"Tentativa de login para o email: {email}")
                 usuario = Usuario.query.filter_by(Email=email).first()
-                if usuario and check_password_hash(usuario.Senha, senha):
+                if usuario.Senha == senha:
                     session['user_id'] = usuario.ID_usuario
                     logger.info(f"Login bem-sucedido para o usuário: {usuario.Nome}")
                     flash('Login realizado com sucesso!', 'success')
@@ -165,7 +169,7 @@ class RouteManager:
                 return redirect(url_for('auth.login'))
             usuario = Usuario.query.get(session['user_id'])
             logger.info(f"Acesso ao dashboard pelo usuário ID: {session['user_id']}")
-            return render_template('dashboard.html', usuario=usuario)
+            return render_template('home.html', usuario=usuario)
 
         @self.auth_routes.route('/schedule', methods=['GET', 'POST'])
         def schedule():

@@ -54,7 +54,6 @@ O sistema Gerenciamento Escolar foi desenvolvido para automatizar as principais 
    git checkout -b minha-nova-feature
 
 ## Contribuidores
-
 gdbarros94  
 luizGDpulz  
 joaoportolan93  
@@ -65,9 +64,6 @@ Gui0r
 rrafaleao  
 elihotchillipeper  
 julianoscherer7
-
-
-
 
 
 

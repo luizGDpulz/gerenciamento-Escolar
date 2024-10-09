@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Agendamentos{% endblock %}</title>
+    <!-- CSS Inline -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e5ecf4;
+            overflow: hidden;
+        }
+
+        /* Navbar */
+        .navbar {
+            width: 100%;
+            height: 60px;
+            background-color: #34495e;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            animation: dropDownNavbar 0.5s ease-out forwards;
+        }
+
+        .navbar h1 {
+            color: white;
+            font-size: 24px;
+        }
+
+        .navbar .user {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .user button {
+            background-color: #1abc9c;
+            border: none;
+            color: white;
+            font-size: 20px;
+            padding: 10px;
+            margin-left: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .navbar .user button:hover {
+            background-color: #16a085;
+        }
+
+        /* Container principal */
+        .container {
+            display: flex;
+            height: 100vh;
+            padding-top: 60px; /* Espaço para a navbar fixa */
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(to bottom, #2c3e50, #34495e);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease;
+            animation: slideInSidebar 0.5s ease-out forwards;
+        }
+
+        .sidebar button {
+            margin-bottom: 10px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 15px;
+            margin-bottom: 10px; /* Aumentei o espaçamento entre os botões */
+            text-align: left;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            position: relative;
+        }
+
+        .sidebar button:hover {
+            background-color: #1abc9c;
+            transform: translateX(5px);
+        }
+
+        /* Botões de Dropdown */
+        .dropdown {
+            display: none;
+            flex-direction: column;
+            background-color: #34495e; /* Cor de fundo do dropdown */
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px; /* Bordas arredondadas */
+        }
+
+        .dropdown button {
+            background-color: #34495e; /* Mesma cor dos botões normais */
+            color: white;
+            border: none;
+            padding: 10px; /* Menor que os botões normais */
+            margin-bottom: 5px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 16px; /* Tamanho do texto */
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown button:hover {
+            background-color: #1abc9c; /* Cor ciano ao passar o mouse */
+        }
+
+        /* Animação para os botões da sidebar com delay */
+        .sidebar button:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+
+        .sidebar button:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .sidebar button:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+
+        .sidebar button:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+        .sidebar button:nth-child(5) {
+            animation-delay: 0.7s;
+        }
+
+        /* Botão para fechar a sidebar */
+        .close-sidebar {
+            background-color: #e74c3c; /* Cor vermelha para o botão de fechar */
+            color: white;
+            border: none;
+            padding: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .close-sidebar:hover {
+            background-color: #c0392b;
+        }
+
+        /* Botão para abrir a sidebar */
+        .open-sidebar {
+            display: none; /* Inicialmente oculto */
+            background-color: #1abc9c; /* Cor do botão */
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 4px;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            transition: background-color 0.3s;
+        }
+
+        .open-sidebar:hover {
+            background-color: #16a085;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            animation: fadeInContent 1s ease-out forwards;
+        }
+
+        /* Animações */
+        @keyframes dropDownNavbar {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInSidebar {
+            from {
+                opacity: 0;
+                transform: translateX(-250px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInContent {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+
+    <!-- Inclusão da Biblioteca Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <h1>Agendamentos - Hoje</h1>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar">
+            <button class="close-sidebar" onclick="closeSidebar()">Fechar Sidebar</button>
+            <button>Início</button>
+            <button>Agendamentos</button>
+            <button onclick="toggleDropdown('prediosDropdown')">Prédios</button>
+            <div id="prediosDropdown" class="dropdown">
+                <button>Prédio 1</button>
+                <button>Prédio 2</button>
+                <button>Prédio 3</button>
+            </div>
+            <button onclick="toggleDropdown('andaresDropdown')">Andares</button>
+            <div id="andaresDropdown" class="dropdown">
+                <button>Andar 1</button>
+                <button>Andar 2</button>
+                <button>Andar 3</button>
+            </div>
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <div class="main-content">
+            {% block content %}
+            <!-- O conteúdo específico de cada página será inserido aqui -->
+            {% endblock %}
+        </div>
+    </div>
+
+    <!-- JavaScript Inline -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('agendamentoChart');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                const agendamentoChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Dom.', 'Seg.', 'Ter.', 'Qua.', 'Qui.', 'Sex.', 'Sáb.'],
+                        datasets: [{
+                            label: 'Taxa de Agendamentos',
+                            data: [10, 20, 30, 40, 50, 30, 10],
+                            backgroundColor: '#3498db',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+        });
+
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            dropdown.style.display = dropdown.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function closeSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.style.display = 'none'; // Fecha a sidebar
+            document.getElementById('openSidebarButton').style.display = 'block'; // Exibe o botão de abrir
+        }
+
+        function openSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.style.display = 'flex'; // Abre a sidebar
+            document.getElementById('openSidebarButton').style.display = 'none'; // Oculta o botão de abrir
+        }
+    </script>
+</body>
+</html>
