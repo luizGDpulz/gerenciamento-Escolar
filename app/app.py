@@ -43,16 +43,18 @@ def create_app():
     # Testar a conexão antes de registrar as rotas
     if test_db_connection():
         # Importar e registrar os Blueprints
-        from routes import main_routes, auth_routes
+        from routes import main_routes, auth_routes, test_routes, config_routes
         app.register_blueprint(main_routes)
         app.register_blueprint(auth_routes)
+        app.register_blueprint(test_routes)
+        app.register_blueprint(config_routes)  # Registrando a nova blueprint
     else:
         @app.route('/')
         def db_error():
             return "Erro de conexão com o banco de dados. Por favor, verifique as configurações e tente novamente."
 
     with app.app_context():
-        # novo_usuario = Usuario.criar_usuario(nome='Kelvin', cargo='cantor de boyband', email='kelvin@gmail.com', senha='senha1')
+        # novo_usuario = Usuario.criar_usuario(nome='root', cargo='Administrador', email='root@gmail.com', senha='root@123')
         # db.session.add(novo_usuario)
         # db.session.commit()  # Não esqueça de confirmar a sessão
         pass
@@ -62,4 +64,3 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     app.run(debug=True)
-    
