@@ -1,8 +1,14 @@
-from flask import Flask
+from flask import Flask, render_template
 from models import db, Usuario
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import text
 import time
-import os  # Adicione esta linha
+import os 
+import logging
+
+# Configuração do logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 def create_app():
     app = Flask(__name__)
@@ -21,46 +27,26 @@ def create_app():
     # Inicializar a instância do banco de dados
     db.init_app(app)
 
-    # Função para testar a conexão
-    def test_db_connection():
-        max_retries = 3
-        retry_delay = 2
+    # Registrar os blueprints
+    from routes import register_blueprints
+    register_blueprints(app)
 
-        for attempt in range(max_retries):
-            try:
-                with app.app_context():
-                    db.engine.connect()
-                print("Conexão com o banco de dados estabelecida com sucesso!")
-                return True
-            except SQLAlchemyError as e:
-                if attempt < max_retries - 1:
-                    print(f"Erro de conexão: {e}. Tentando novamente em {retry_delay} segundos...")
-                    time.sleep(retry_delay)
-                else:
-                    print(f"Falha ao conectar ao banco de dados após {max_retries} tentativas: {e}")
-                    return False
-
-    # Testar a conexão antes de registrar as rotas
-    if test_db_connection():
-        # Importar e registrar os Blueprints
-        from routes import main_routes, auth_routes, test_routes, config_routes
-        app.register_blueprint(main_routes)
-        app.register_blueprint(auth_routes)
-        app.register_blueprint(test_routes)
-        app.register_blueprint(config_routes)  # Registrando a nova blueprint
-    else:
-        @app.route('/')
-        def db_error():
-            return "Erro de conexão com o banco de dados. Por favor, verifique as configurações e tente novamente."
-
-    with app.app_context():
-        # novo_usuario = Usuario.criar_usuario(nome='root', cargo='Administrador', email='root@gmail.com', senha='root@123')
-        # db.session.add(novo_usuario)
-        # db.session.commit()  # Não esqueça de confirmar a sessão
-        pass
+    # Adicionar rota de teste de conexão ao banco de dados
+    @app.route('/test_db')
+    def test_db():
+        try:
+            result = db.session.execute(text("SELECT 1")).fetchone()
+            debug_message = f"Conexão com o banco de dados bem-sucedida. Resultado: {result[0]}"
+            logger.debug(debug_message)
+            return render_template('teste_db.html', debug_message=debug_message)
+        except Exception as e:
+            error_message = f"Erro ao conectar ao banco de dados: {str(e)}"
+            logger.error(error_message)
+            return render_template('test_db.html', error_message=error_message)
 
     return app
 
 if __name__ == '__main__':
     app = create_app()
     app.run(debug=True)
+    
