@@ -16,9 +16,9 @@ def login_required(f):
 
 @main.route('/')
 def index():
-    return redirect(url_for('main.dashboard'))
+    return redirect(url_for('main.home'))
 
-@main.route('/dashboard')
+@main.route('/home')
 def dashboard():
     return render_template('home.html')
 
