@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Administração</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Painel de Administração</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Sair</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1>Bem-vindo, {{ usuario.Nome }}</h1>
+        
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Gerenciar Usuários</h5>
+                        <p class="card-text">Adicione, edite ou remova usuários do sistema.</p>
+                        <a href="#" class="btn btn-primary" id="gerenciarUsuarios">Gerenciar Usuários</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Gerenciar Prédios e Salas</h5>
+                        <p class="card-text">Gerencie a estrutura física da instituição.</p>
+                        <a href="#" class="btn btn-primary" id="gerenciarPrediosSalas">Gerenciar Prédios e Salas</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Gerenciar Turmas</h5>
+                        <p class="card-text">Crie, edite ou remova turmas e horários.</p>
+                        <a href="#" class="btn btn-primary" id="gerenciarTurmas">Gerenciar Turmas</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Gerenciar Recursos</h5>
+                        <p class="card-text">Administre os recursos disponíveis nas salas.</p>
+                        <a href="#" class="btn btn-primary" id="gerenciarRecursos">Gerenciar Recursos</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Relatórios</h5>
+                        <p class="card-text">Gere relatórios sobre uso de salas e recursos.</p>
+                        <a href="#" class="btn btn-primary" id="gerarRelatorios">Gerar Relatórios</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Configurações do Sistema</h5>
+                        <p class="card-text">Ajuste as configurações gerais do sistema.</p>
+                        <a href="#" class="btn btn-primary" id="configuracoesSistema">Configurações do Sistema</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Aqui você pode adicionar JavaScript para lidar com as ações dos botões
+        document.getElementById('gerenciarUsuarios').addEventListener('click', function() {
+            // Lógica para gerenciar usuários
+        });
+
+        document.getElementById('gerenciarPrediosSalas').addEventListener('click', function() {
+            // Lógica para gerenciar prédios e salas
+        });
+
+        document.getElementById('gerenciarTurmas').addEventListener('click', function() {
+            // Lógica para gerenciar turmas
+        });
+
+        document.getElementById('gerenciarRecursos').addEventListener('click', function() {
+            // Lógica para gerenciar recursos
+        });
+
+        document.getElementById('gerarRelatorios').addEventListener('click', function() {
+            // Lógica para gerar relatórios
+        });
+
+        document.getElementById('configuracoesSistema').addEventListener('click', function() {
+            // Lógica para configurações do sistema
+        });
+    </script>
+</body>
+</html>
