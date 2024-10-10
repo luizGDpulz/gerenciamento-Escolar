@@ -14,7 +14,7 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #000000;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -141,7 +141,7 @@
         <div class="login-section">
             <h1>Class Manager</h1>
             <form action="{{ url_for('auth.login') }}" method="POST" id="loginForm">
-                <label for="email">Email</label>
+                <label for="email">Email ou Username</label>
                 <input type="email" id="email" name="email" placeholder="Digite seu email" required>
                 
                 <label for="password">Senha</label>
