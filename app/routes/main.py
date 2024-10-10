@@ -19,7 +19,7 @@ def index():
     return redirect(url_for('main.home'))
 
 @main.route('/home')
-def dashboard():
+def home():
     return render_template('home.html')
 
 @main.route('/register', methods=['GET', 'POST'])
